@@ -1,3 +1,6 @@
+import java.util.Properties
+
+// Top-level plugins block is correct
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +9,17 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.google.services)
 }
+
+// <-- START: ADD THIS LOGIC TO LOAD local.properties
+// Create a new Properties object
+val localProperties = Properties()
+// Find the root project's local.properties file
+val localPropertiesFile = rootProject.file("local.properties")
+// If the file exists, load its contents into the Properties object
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+// <-- END: ADD THIS LOGIC
 
 android {
     namespace = "com.pranav.promptcraft"
@@ -22,6 +36,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // <-- CHANGE THIS LINE: Use the loaded properties
+        // Get the API key from the loaded localProperties object
+        val geminiApiKey = localProperties.getProperty("GEMINI_API_KEY")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -43,10 +62,14 @@ android {
     buildFeatures {
         compose = true
     }
+    // composeOptions should be inside the buildFeatures block
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1" // Example version, use your actual version from libs
+    }
 }
 
 dependencies {
-
+    // Your dependencies block is fine, no changes needed here.
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

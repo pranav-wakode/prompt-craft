@@ -7,7 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
+import com.pranav.promptcraft.BuildConfig
 /**
  * Hilt module for providing network and API dependencies
  */
@@ -28,7 +28,7 @@ object NetworkModule {
         // In production, store this securely (e.g., using BuildConfig or secure storage)
         return GenerativeModel(
             modelName = "gemini-pro",
-            apiKey = "your-api-key-here" // TODO: Replace with actual API key
+            apiKey = BuildConfig.GEMINI_API_KEY // TODO: Replace with actual API key
         )
     }
 }

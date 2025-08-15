@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <!-- Force Update Configuration -->
+    <entry>
+        <key>android_min_version_code</key>
+        <value>1</value>
+    </entry>
+    <entry>
+        <key>is_update_dialog_cancellable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>update_url</key>
+        <value>https://play.google.com/store/apps/details?id=com.pranav.promptcraft</value>
+    </entry>
+    
+    <!-- In-App Notifications Configuration -->
+    <entry>
+        <key>show_notification_icon</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>notification_icon_has_badge</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>in_app_notifications_json</key>
+        <value>[
+    {
+        "id": 1,
+        "title": "Welcome to PromptCraft!",
+        "message": "Thank you for installing PromptCraft. Create amazing prompts with our AI-powered enhancement tools.",
+        "url": "",
+        "timestamp": "2025-01-01T12:00:00Z"
+    }
+]</value>
+    </entry>
+</defaultsMap>

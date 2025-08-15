@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
     alias(libs.plugins.google.services)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -95,6 +96,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
+    implementation("com.google.firebase:firebase-config-ktx")
     implementation(libs.play.services.auth)
     
     // Credential Manager & Google Sign-In
@@ -104,4 +106,7 @@ dependencies {
 
     // Gemini
     implementation(libs.generativeai)
+    
+    // Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }

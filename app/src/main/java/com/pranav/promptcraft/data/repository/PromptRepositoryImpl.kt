@@ -1,8 +1,10 @@
 package com.pranav.promptcraft.data.repository
 
+import com.google.ai.client.generativeai.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.pranav.promptcraft.data.database.PromptDao
 import com.pranav.promptcraft.domain.model.Prompt
+import com.pranav.promptcraft.domain.repository.ChatWithResponse
 import com.pranav.promptcraft.domain.repository.PromptRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -33,7 +35,7 @@ class PromptRepositoryImpl @Inject constructor(
         promptDao.deletePrompt(prompt)
     }
 
-    override suspend fun enhancePrompt(originalPrompt: String, selectedTypes: List<String>): String {
+    override suspend fun startEnhancementChat(originalPrompt: String, selectedTypes: List<String>): ChatWithResponse {
         val typesText = if (selectedTypes.contains("Auto")) {
             "Auto"
         } else {
@@ -41,10 +43,30 @@ class PromptRepositoryImpl @Inject constructor(
         }
 
         val metaPrompt = buildMetaPrompt(originalPrompt, typesText)
+        val chat = generativeModel.startChat()
         
         return try {
-            val response = generativeModel.generateContent(metaPrompt)
-            response.text ?: "Error: Unable to generate enhanced prompt"
+            val response = chat.sendMessage(metaPrompt)
+            val initialResponse = response.text ?: "Error: Unable to generate initial response"
+            ChatWithResponse(chat, initialResponse)
+        } catch (e: Exception) {
+            val errorMessage = when {
+                e.message?.contains("models/gemini-pro is not found") == true -> 
+                    "Model not found. Please check the API configuration."
+                e.message?.contains("API_KEY_INVALID") == true -> 
+                    "Invalid API key. Please check your Gemini API key."
+                e.message?.contains("RATE_LIMIT_EXCEEDED") == true -> 
+                    "Rate limit exceeded. Please try again later."
+                else -> "Network error: ${e.localizedMessage ?: "Unknown error occurred"}"
+            }
+            ChatWithResponse(chat, errorMessage)
+        }
+    }
+
+    override suspend fun sendFollowUpMessage(chat: Chat, message: String): String {
+        return try {
+            val response = chat.sendMessage(message)
+            response.text ?: "Error: Unable to generate response"
         } catch (e: Exception) {
             val errorMessage = when {
                 e.message?.contains("models/gemini-pro is not found") == true -> 
@@ -59,6 +81,13 @@ class PromptRepositoryImpl @Inject constructor(
         }
     }
 
+    // Temporary compatibility method - will be removed
+    @Deprecated("Use EnhanceViewModel with startEnhancementChat instead")
+    override suspend fun enhancePrompt(originalPrompt: String, selectedTypes: List<String>): String {
+        val chatWithResponse = startEnhancementChat(originalPrompt, selectedTypes)
+        return chatWithResponse.initialResponse
+    }
+    
     private fun buildMetaPrompt(userPrompt: String, selectedTypes: String): String {
         return """
             You are an expert prompt engineer. Analyze the following user prompt and either:

@@ -210,7 +210,7 @@ fun MainAppContent(
                     Text(
                         text = when (currentRoute) {
                             Destinations.ACCOUNT -> "Account"
-                            else -> "PromptCraft"
+                            else -> "Prompt Craft"
                         },
                         fontWeight = FontWeight.Bold
                     )

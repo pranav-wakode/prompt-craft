@@ -24,6 +24,7 @@ import com.pranav.promptcraft.domain.model.PromptType
 import com.pranav.promptcraft.presentation.components.ErrorMessage
 import com.pranav.promptcraft.presentation.components.LoadingIndicator
 import com.pranav.promptcraft.presentation.viewmodels.PromptEnhancerViewModel
+import com.pranav.promptcraft.presentation.viewmodels.PromptLength
 
 /**
  * Main home screen for prompt enhancement
@@ -68,6 +69,7 @@ fun HomeScreen(
                 uiState = uiState,
                 onInputChange = viewModel::updateInputPrompt,
                 onTypeSelect = viewModel::selectPromptType,
+                onLengthSelect = viewModel::selectPromptLength,
                 onEnhance = viewModel::enhancePrompt,
                 onClearError = viewModel::clearError
             )
@@ -80,6 +82,7 @@ private fun PromptEnhancementContent(
     uiState: com.pranav.promptcraft.presentation.viewmodels.PromptEnhancerUiState,
     onInputChange: (String) -> Unit,
     onTypeSelect: (PromptType) -> Unit,
+    onLengthSelect: (PromptLength) -> Unit,
     onEnhance: () -> Unit,
     onClearError: () -> Unit
 ) {
@@ -129,6 +132,31 @@ private fun PromptEnhancementContent(
                 onClick = { onTypeSelect(type) },
                 label = { Text(type.displayName) },
                 selected = uiState.selectedPromptTypes.contains(type),
+                modifier = Modifier.padding(horizontal = 2.dp)
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(24.dp))
+
+    // Output length selection
+    Text(
+        text = "Output Length",
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold
+    )
+    
+    Spacer(modifier = Modifier.height(8.dp))
+    
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp)
+    ) {
+        items(PromptLength.values()) { length ->
+            FilterChip(
+                onClick = { onLengthSelect(length) },
+                label = { Text(length.displayName) },
+                selected = uiState.selectedLength == length,
                 modifier = Modifier.padding(horizontal = 2.dp)
             )
         }

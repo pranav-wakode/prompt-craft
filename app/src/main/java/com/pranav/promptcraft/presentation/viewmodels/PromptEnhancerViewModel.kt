@@ -15,6 +15,15 @@ import java.io.IOException
 import javax.inject.Inject
 
 /**
+ * Enum for prompt output length options
+ */
+enum class PromptLength(val displayName: String) {
+    SHORT("Short"),
+    MEDIUM("Medium"),
+    LONG("Long")
+}
+
+/**
  * ViewModel for the main prompt enhancement screen
  */
 @HiltViewModel
@@ -56,6 +65,10 @@ class PromptEnhancerViewModel @Inject constructor(
         _uiState.value = currentState.copy(selectedPromptTypes = newSelectedTypes)
     }
 
+    fun selectPromptLength(length: PromptLength) {
+        _uiState.value = _uiState.value.copy(selectedLength = length)
+    }
+
     fun enhancePrompt() {
         val currentState = _uiState.value
         if (currentState.inputPrompt.isBlank()) return
@@ -67,7 +80,8 @@ class PromptEnhancerViewModel @Inject constructor(
                 val selectedTypeNames = currentState.selectedPromptTypes.map { it.displayName }
                 val enhancedText = promptRepository.enhancePrompt(
                     currentState.inputPrompt,
-                    selectedTypeNames
+                    selectedTypeNames,
+                    currentState.selectedLength
                 )
 
                 // Save to history and navigate to result
@@ -150,6 +164,7 @@ class PromptEnhancerViewModel @Inject constructor(
 data class PromptEnhancerUiState(
     val inputPrompt: String = "",
     val selectedPromptTypes: Set<PromptType> = setOf(PromptType.AUTO),
+    val selectedLength: PromptLength = PromptLength.MEDIUM,
     val isLoading: Boolean = false,
     val enhancedPrompt: String? = null,
     val showResult: Boolean = false,

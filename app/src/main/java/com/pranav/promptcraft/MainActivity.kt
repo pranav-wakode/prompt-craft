@@ -37,6 +37,7 @@ import com.pranav.promptcraft.presentation.navigation.BottomNavItem
 import com.pranav.promptcraft.presentation.navigation.Destinations
 import com.pranav.promptcraft.presentation.screens.*
 import com.pranav.promptcraft.presentation.viewmodels.AuthViewModel
+import com.pranav.promptcraft.presentation.viewmodels.MainViewModel
 import com.pranav.promptcraft.ui.theme.PromptCraftTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.json.Json
@@ -61,9 +62,9 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PromptCraftApp(remoteConfig: FirebaseRemoteConfig) {
-    // Theme state
-    var isDarkMode by remember { mutableStateOf(true) } // Default to dark mode as requested
-    val systemDarkMode = isSystemInDarkTheme()
+    // Theme management with persistent storage
+    val mainViewModel: MainViewModel = hiltViewModel()
+    val isDarkMode by mainViewModel.isDarkTheme.collectAsState()
     
     // Force update state
     var showForceUpdateDialog by remember { mutableStateOf(false) }
@@ -138,26 +139,9 @@ fun PromptCraftApp(remoteConfig: FirebaseRemoteConfig) {
                 )
             }
 
-            // Main App with Bottom Navigation
+            // Main App with unified navigation
             composable(Destinations.HOME) {
                 MainAppContent(
-                    isDarkMode = isDarkMode,
-                    onThemeToggle = { isDarkMode = it },
-                    onNavigateToSettings = {
-                        navController.navigate(Destinations.SETTINGS)
-                    },
-                    showNotificationIcon = showNotificationIcon,
-                    notificationHasBadge = notificationHasBadge,
-                    onNotificationClick = { showNotificationSheet = true }
-                )
-            }
-
-            // Account Screen (accessible via bottom nav)
-            composable(Destinations.ACCOUNT) {
-                MainAppContent(
-                    isDarkMode = isDarkMode,
-                    onThemeToggle = { isDarkMode = it },
-                    initialDestination = Destinations.ACCOUNT,
                     onNavigateToSettings = {
                         navController.navigate(Destinations.SETTINGS)
                     },
@@ -174,7 +158,7 @@ fun PromptCraftApp(remoteConfig: FirebaseRemoteConfig) {
                         navController.popBackStack()
                     },
                     isDarkMode = isDarkMode,
-                    onThemeToggle = { isDarkMode = it }
+                    onThemeToggle = mainViewModel::toggleTheme
                 )
             }
         }
@@ -207,51 +191,56 @@ fun PromptCraftApp(remoteConfig: FirebaseRemoteConfig) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppContent(
-    isDarkMode: Boolean,
-    onThemeToggle: (Boolean) -> Unit,
-    initialDestination: String = Destinations.HOME,
     onNavigateToSettings: (() -> Unit)? = null,
     showNotificationIcon: Boolean = false,
     notificationHasBadge: Boolean = false,
     onNotificationClick: () -> Unit = {}
 ) {
     val bottomNavController = rememberNavController()
+    val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { 
                     Text(
-                        text = "PromptCraft",
+                        text = when (currentRoute) {
+                            Destinations.ACCOUNT -> "Account"
+                            else -> "PromptCraft"
+                        },
                         fontWeight = FontWeight.Bold
                     )
                 },
                 actions = {
-                    // Notification icon (conditionally displayed)
-                    if (showNotificationIcon) {
-                        BadgedBox(
-                            badge = {
-                                if (notificationHasBadge) {
-                                    Badge()
+                    // Show notification and settings icons only on home screen
+                    if (currentRoute == Destinations.HOME) {
+                        // Notification icon (conditionally displayed)
+                        if (showNotificationIcon) {
+                            BadgedBox(
+                                badge = {
+                                    if (notificationHasBadge) {
+                                        Badge()
+                                    }
+                                }
+                            ) {
+                                IconButton(onClick = onNotificationClick) {
+                                    Icon(
+                                        imageVector = Icons.Default.Notifications,
+                                        contentDescription = "Notifications"
+                                    )
                                 }
                             }
-                        ) {
-                            IconButton(onClick = onNotificationClick) {
+                        }
+                        
+                        // Settings icon (always displayed)
+                        onNavigateToSettings?.let { settingsCallback ->
+                            IconButton(onClick = settingsCallback) {
                                 Icon(
-                                    imageVector = Icons.Default.Notifications,
-                                    contentDescription = "Notifications"
+                                    imageVector = Icons.Default.Settings,
+                                    contentDescription = "Settings"
                                 )
                             }
-                        }
-                    }
-                    
-                    // Settings icon (always displayed)
-                    onNavigateToSettings?.let { settingsCallback ->
-                        IconButton(onClick = settingsCallback) {
-                            Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings"
-                            )
                         }
                     }
                 }
@@ -291,7 +280,7 @@ fun MainAppContent(
     ) { paddingValues ->
         NavHost(
             navController = bottomNavController,
-            startDestination = initialDestination,
+            startDestination = Destinations.HOME,
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Destinations.HOME) {

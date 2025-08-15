@@ -32,7 +32,7 @@ class EnhanceViewModel @Inject constructor(
         
         viewModelScope.launch {
             try {
-                val response = promptRepository.enhancePrompt(prompt, types)
+                val response = promptRepository.enhancePrompt(prompt, types, PromptLength.MEDIUM)
                 _uiState.value = EnhanceUiState.Success(response)
             } catch (e: Exception) {
                 _uiState.value = EnhanceUiState.Error(

@@ -36,7 +36,6 @@ import java.util.*
 /**
  * Account screen showing user information and prompt history
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
@@ -49,54 +48,33 @@ fun AccountScreen(
     val context = LocalContext.current
 
     // History is loaded in ViewModel init
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        text = "Account",
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { authViewModel.signOut() }) {
-                        Icon(
-                            imageVector = Icons.Default.ExitToApp,
-                            contentDescription = "Sign Out"
-                        )
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
+    // No Scaffold needed here since MainActivity provides the TopAppBar
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // User Info Section
+        UserInfoSection(
+            user = currentUser,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // User Info Section
-            UserInfoSection(
-                user = currentUser,
-                modifier = Modifier.padding(16.dp)
-            )
+        )
 
-            Divider(modifier = Modifier.padding(horizontal = 16.dp))
+        Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp))
 
-            // History Section
-            HistorySection(
-                prompts = historyUiState.prompts,
-                isLoading = historyUiState.isLoading,
-                error = historyUiState.error,
-                onDeletePrompt = { prompt -> historyViewModel.deletePrompt(prompt) },
-                onCopyPrompt = { text ->
-                    clipboardManager.setText(AnnotatedString(text))
-                    Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
-                },
-                onRetry = { historyViewModel.loadHistory() },
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        // History Section
+        HistorySection(
+            prompts = historyUiState.prompts,
+            isLoading = historyUiState.isLoading,
+            error = historyUiState.error,
+            onDeletePrompt = { prompt -> historyViewModel.deletePrompt(prompt) },
+            onCopyPrompt = { text ->
+                clipboardManager.setText(AnnotatedString(text))
+                Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+            },
+            onRetry = { historyViewModel.loadHistory() },
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 

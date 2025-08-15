@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -147,7 +148,8 @@ fun PromptCraftApp(remoteConfig: FirebaseRemoteConfig) {
                     },
                     showNotificationIcon = showNotificationIcon,
                     notificationHasBadge = notificationHasBadge,
-                    onNotificationClick = { showNotificationSheet = true }
+                    onNotificationClick = { showNotificationSheet = true },
+                    authViewModel = authViewModel
                 )
             }
 
@@ -194,7 +196,8 @@ fun MainAppContent(
     onNavigateToSettings: (() -> Unit)? = null,
     showNotificationIcon: Boolean = false,
     notificationHasBadge: Boolean = false,
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    authViewModel: AuthViewModel
 ) {
     val bottomNavController = rememberNavController()
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
@@ -213,32 +216,42 @@ fun MainAppContent(
                     )
                 },
                 actions = {
-                    // Show notification and settings icons only on home screen
-                    if (currentRoute == Destinations.HOME) {
-                        // Notification icon (conditionally displayed)
-                        if (showNotificationIcon) {
-                            BadgedBox(
-                                badge = {
-                                    if (notificationHasBadge) {
-                                        Badge()
+                    when (currentRoute) {
+                        Destinations.HOME -> {
+                            // Notification icon (conditionally displayed)
+                            if (showNotificationIcon) {
+                                BadgedBox(
+                                    badge = {
+                                        if (notificationHasBadge) {
+                                            Badge()
+                                        }
+                                    }
+                                ) {
+                                    IconButton(onClick = onNotificationClick) {
+                                        Icon(
+                                            imageVector = Icons.Default.Notifications,
+                                            contentDescription = "Notifications"
+                                        )
                                     }
                                 }
-                            ) {
-                                IconButton(onClick = onNotificationClick) {
+                            }
+                            
+                            // Settings icon (always displayed)
+                            onNavigateToSettings?.let { settingsCallback ->
+                                IconButton(onClick = settingsCallback) {
                                     Icon(
-                                        imageVector = Icons.Default.Notifications,
-                                        contentDescription = "Notifications"
+                                        imageVector = Icons.Default.Settings,
+                                        contentDescription = "Settings"
                                     )
                                 }
                             }
                         }
-                        
-                        // Settings icon (always displayed)
-                        onNavigateToSettings?.let { settingsCallback ->
-                            IconButton(onClick = settingsCallback) {
+                        Destinations.ACCOUNT -> {
+                            // Sign out icon for Account screen
+                            IconButton(onClick = { authViewModel.signOut() }) {
                                 Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = "Settings"
+                                    imageVector = Icons.Default.ExitToApp,
+                                    contentDescription = "Sign Out"
                                 )
                             }
                         }

@@ -7,7 +7,6 @@ PromptCraft is a modern Android application that helps users create high-quality
 ### 🎯 Core Features
 - **AI-Powered Prompt Enhancement**: Uses Google Gemini API to enhance user prompts
 - **Prompt Type Selection**: Support for various prompt engineering techniques (Zero-Shot, Few-Shot, Chain-of-Thought, Role-Playing, etc.)
-- **Interactive Follow-ups**: AI asks clarifying questions for vague prompts
 - **History Management**: Local storage of enhanced prompts with Room database
 - **User Authentication**: Google Sign-In and Guest mode support
 
@@ -38,6 +37,49 @@ PromptCraft is a modern Android application that helps users create high-quality
 - **AI Integration**: Google Gemini API
 - **Version Control**: Git
 
+## Usage
+
+### First Launch
+1. Choose "Sign in with Google" or "Continue as Guest"
+2. Access the main prompt enhancement screen
+
+<p align="center">
+  <img src="./screenshots/login.jpg" width="200" alt="Login Screen">
+  <img src="./screenshots/home.jpg" width="200" alt="Home Screen">
+</p>
+
+### Enhancing Prompts
+1. Enter your initial prompt in the text field
+2. Select prompt types or use "Auto" for automatic selection
+3. Tap "Enhance Prompt"
+4. If the AI needs more information, answer the follow-up question
+5. View, copy, or edit the enhanced prompt
+
+<p align="center">
+  <img src="./screenshots/prompt.jpg" width="200" alt="Initial Prompt Screen">
+  <img src="./screenshots/enhanced_prompt.jpg" width="200" alt="Enhanced Prompt Screen">
+</p>
+
+### Viewing History
+1. Tap the "History" tab in bottom navigation
+2. View all previously enhanced prompts
+3. Tap any item to expand and see details
+4. Copy original or enhanced prompts
+5. Delete unwanted prompts
+
+<p align="center">
+  <img src="./screenshots/account.jpg" width="200" alt="History Screen">
+</p>
+
+### Settings
+1. Tap the settings icon in the top bar
+2. Toggle between dark and light modes
+3. View app information
+
+<p align="center">
+  <img src="./screenshots/settings.jpg" width="200" alt="Settings Screen">
+</p>
+
 ## Project Structure
 
 ```
@@ -67,8 +109,8 @@ app/src/main/java/com/pranav/promptcraft/
 
 ### 1. Clone and Setup Project
 ```bash
-git clone <repository-url>
-cd PromptCraft
+git clone https://github.com/wakodepranav2005-git/prompt-engineer.git
+cd prompt-engineer
 ```
 
 ### 2. Configure Google Gemini API
@@ -81,8 +123,6 @@ return GenerativeModel(
 )
 ```
 
-**Important**: For production apps, store the API key securely using BuildConfig or encrypted storage.
-
 ### 3. Configure Firebase (Optional - for Google Sign-In)
 1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
 2. Add your Android app to the project
@@ -93,31 +133,6 @@ return GenerativeModel(
 1. Open the project in Android Studio
 2. Sync the project (Gradle sync)
 3. Build and run on device or emulator
-
-## Usage
-
-### First Launch
-1. Choose "Sign in with Google" or "Continue as Guest"
-2. Access the main prompt enhancement screen
-
-### Enhancing Prompts
-1. Enter your initial prompt in the text field
-2. Select prompt types or use "Auto" for automatic selection
-3. Tap "Enhance Prompt"
-4. If the AI needs more information, answer the follow-up question
-5. View, copy, or edit the enhanced prompt
-
-### Viewing History
-1. Tap the "History" tab in bottom navigation
-2. View all previously enhanced prompts
-3. Tap any item to expand and see details
-4. Copy original or enhanced prompts
-5. Delete unwanted prompts
-
-### Settings
-1. Tap the settings icon in the top bar
-2. Toggle between dark and light modes
-3. View app information
 
 ## Architecture Details
 
@@ -163,7 +178,3 @@ return GenerativeModel(
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-For support, email [your-email@example.com] or create an issue in the GitHub repository.

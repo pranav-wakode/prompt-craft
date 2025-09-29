@@ -32,7 +32,7 @@ PromptCraft is a modern Android application that helps users create high-quality
 
 <p align="center">
   <img src="./screenshots/login.jpg" width="200" alt="Login Screen">
-  &nbsp;&nbsp;&nbsp;<img src="./screenshots/home.jpg" width="200" alt="Home Screen">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./screenshots/home.jpg" width="200" alt="Home Screen">
 </p>
 
 ### Enhancing Prompts
@@ -44,7 +44,7 @@ PromptCraft is a modern Android application that helps users create high-quality
 
 <p align="center">
   <img src="./screenshots/prompt.jpg" width="200" alt="Initial Prompt Screen">
-  &nbsp;&nbsp;&nbsp;<img src="./screenshots/enhanced_prompt.jpg" width="200" alt="Enhanced Prompt Screen">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="./screenshots/enhanced_prompt.jpg" width="200" alt="Enhanced Prompt Screen">
 </p>
 
 ### Viewing History

@@ -1,6 +1,6 @@
-# PromptCraft - AI-Powered Prompt Enhancement
+# Prompt Craft - AI-Powered Prompt Enhancement
 
-PromptCraft is a modern Android application that helps users create high-quality, effective prompts for generative AI models using Google Gemini API. The app features a clean, Material 3 design with dark mode by default and follows modern Android development best practices.
+Prompt Craft is a modern Android application that helps users create high-quality, effective prompts for generative AI models using Google Gemini API. The app features a clean, Material 3 design with dark mode by default and follows modern Android development best practices.
 
 ## Features
 
@@ -83,7 +83,7 @@ PromptCraft is a modern Android application that helps users create high-quality
 ## Project Structure
 
 ```
-app/src/main/java/com/pranav/promptcraft/
+app/src/main/java/com/pranav/prompt-craft/
 ├── data/
 │   ├── database/          # Room database setup
 │   └── repository/        # Repository implementations
@@ -109,8 +109,8 @@ app/src/main/java/com/pranav/promptcraft/
 
 ### 1. Clone and Setup Project
 ```bash
-https://github.com/pranav-wakode/prompt-engineer.git
-cd prompt-engineer
+git clone https://github.com/pranav-wakode/prompt-craft.git
+cd prompt-craft
 ```
 
 ### 2. Set Up Your Google Gemini API Key
